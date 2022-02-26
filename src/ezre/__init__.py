@@ -7,6 +7,14 @@ Run the following command:
 
 ~~~bash
 python3 -m unittest -v ezre
+
+History
+-------
+1.0.2
+:   Bugfixes
+
+1.0.0
+:   Initial version
 ~~~
 """
 from __future__ import annotations
@@ -23,7 +31,7 @@ import doctest
 
 __author__ = "Heuron Patapon"
 __email__ = "heuron-patapon@laposte.net"
-__version__ = "1.0.0"
+__version__ = "1.0.2"
 
 
 __all__ = (
