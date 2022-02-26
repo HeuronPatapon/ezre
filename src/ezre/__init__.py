@@ -412,8 +412,17 @@ class Ezre:
 
     >>> Ezre.from_sequence(["c", "a", "ab"]).re
     '(ab|a|c)'
-    >>> Ezre.from_sequence(["M*", "r\\\\", "?"]).re
-    '(M\\*|r\\\\|\\?)'
+
+    # use case, with special characters:
+
+    >>> XSAMPA_TO_IPA = {"M*": "ɰ", "r\\\\": "ɹ", "?": "ʔ", "U": "ʊ", "1": "ɨ"}
+    >>> XSAMPA = Ezre.from_sequence(XSAMPA_TO_IPA).re
+    >>> in_ = "fweM*o ta?i r\\\\oUz1z"
+    >>> out_ = re.sub(XSAMPA, lambda m: XSAMPA_TO_IPA[m.group(0)], in_)
+    >>> XSAMPA
+    '(M\\\\*|r\\\\\\\\|\\\\?|1|U)'
+    >>> out_
+    'fweɰo taʔi ɹoʊzɨz'
 
     ~~~
     """
