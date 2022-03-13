@@ -6,16 +6,22 @@ Tests
 Run the following command:
 
 ~~~bash
-python3 -m unittest -v ezre
+python3 -m unittest -v hpat.ezre
+~~~
 
 History
 -------
+1.1.0
+:   - Move to `hpat` namespace package
+    - Add support for None + ezre and ezre + None
+
+
 1.0.2
 :   Bugfixes
 
 1.0.0
 :   Initial version
-~~~
+
 """
 from __future__ import annotations
 
@@ -31,7 +37,7 @@ import doctest
 
 __author__ = "Heuron Patapon"
 __email__ = "heuron-patapon@laposte.net"
-__version__ = "1.0.2"
+__version__ = "1.1.0"
 
 
 __all__ = (
@@ -586,6 +592,13 @@ class Ezre:
         return self.__class__(
             expr=self.And(self, other),
             label=self.label + other.label)
+
+    def __radd__(self, other) -> Ezre:
+        if other is None:
+            other = EZRE.Begin
+            return other + self
+        else:
+            return NotImplemented
 
     def __getitem__(self, cardinality: int | slice | Cardinality) -> Ezre:
         """
