@@ -11,6 +11,9 @@ python3 -m unittest -v hpat.ezre
 
 History
 -------
+1.1.1
+:   Add wheel support. 
+
 1.1.0
 :   - Move to `hpat` namespace package
     - Add support for None + ezre and ezre + None
