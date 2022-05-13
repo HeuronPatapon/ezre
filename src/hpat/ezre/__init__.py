@@ -11,7 +11,7 @@ python3 -m unittest -v hpat.ezre
 
 History
 -------
-1.1.1
+1.1.2
 :   Add wheel support. 
 
 1.1.0
@@ -40,7 +40,7 @@ import doctest
 
 __author__ = "Heuron Patapon"
 __email__ = "heuron-patapon@laposte.net"
-__version__ = "1.1.0"
+__version__ = "1.1.2"
 
 
 __all__ = (
