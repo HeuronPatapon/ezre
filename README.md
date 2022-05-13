@@ -11,7 +11,7 @@ Wrapper around the `re` module for easier management of regular expressions.
 Run the following command:
 
 ~~~bash
-python3 -m unittest -v ezre
+python3 -m unittest -v hpat.ezre
 ~~~
 
 
