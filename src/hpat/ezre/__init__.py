@@ -15,7 +15,7 @@ import doctest
 
 __author__ = "Heuron Patapon"
 __email__ = "heuron-patapon@laposte.net"
-__version__ = "1.1.2"
+__version__ = "1.2.0"
 
 
 __all__ = (
