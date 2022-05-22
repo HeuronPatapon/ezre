@@ -1,30 +1,5 @@
 """
 Helpers for manipulating regular expressions. 
-
-Tests
------
-Run the following command:
-
-~~~bash
-python3 -m unittest -v hpat.ezre
-~~~
-
-History
--------
-1.1.2
-:   Add wheel support. 
-
-1.1.0
-:   - Move to `hpat` namespace package
-    - Add support for None + ezre and ezre + None
-
-
-1.0.2
-:   Bugfixes
-
-1.0.0
-:   Initial version
-
 """
 from __future__ import annotations
 
