@@ -1,3 +1,8 @@
+# 1.3.0
+
+- Shortcut for group references (`Ezre.group`). 
+- Shortcuts for lookaround assertions. 
+
 # 1.2.0
 
 - Move to MIT license. 
