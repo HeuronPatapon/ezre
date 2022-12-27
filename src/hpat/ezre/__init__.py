@@ -11,6 +11,7 @@ from reprlib import recursive_repr
 import operator
 import unittest
 import doctest
+import functools
 
 
 __author__ = "Heuron Patapon"
@@ -45,7 +46,6 @@ class Cardinality:
 
     Examples
     --------
-    ~~~python
     # basic usage:
 
     >>> str(Cardinality(1, 2))
@@ -122,8 +122,6 @@ class Cardinality:
     Traceback (most recent call last):
     ...
     ValueError: step=<built-in function min> cannot be used when start=5 == stop=5
-
-    ~~~
     """
     start: int
     stop: CompleteIN
@@ -256,7 +254,6 @@ class Label:
 
     Examples
     --------
-    ~~~python
     # basic usage
 
     >>> a, b, c = Label(Var("A")), Label(Var("B")), Label(Var("C"))
@@ -284,7 +281,7 @@ class Label:
     >>> a + (b | c)
     A(B|C)
 
-    ~~~
+
     """
     class And:
         def __init__(self, *items: Label):
@@ -340,7 +337,6 @@ class Ezre:
 
     Examples
     --------
-    ~~~python
     # basic usage:
 
     >>> a = Ezre.from_sequence(["A", "B"], label="a")
@@ -416,7 +412,21 @@ class Ezre:
     >>> out_
     'fweɰo taʔi ɹoʊzɨz'
 
-    ~~~
+    # lookaround assertions:
+
+    >>> a.ahead().re  # positive lookahead
+    '(?=(A|B))'
+    >>> a.not_ahead().re  # negative lookahead
+    '(?!(A|B))'
+
+    >>> a.behind().re # positive lookbehind
+    '(?<=(A|B))'
+    >>> a.not_behind().re # negative lookbehind
+    '(?<!(A|B))'
+
+    See Also
+    --------
+    Ezre.group:  for creating or referencing groups in regex. 
     """
     _instances = WeakValueDictionary()
     get_re: Callable[[], str] = operator.attrgetter("re")
@@ -532,13 +542,30 @@ class Ezre:
             raise TypeError(f"{(type(label) == Union[str, Label])=}")
         return self
 
-    def group(self, name: str) -> Ezre:
-        """Return a copy of this instance with a regex group named `name`. """
-        start = self.from_str(rf"(?P<{name}>")
-        end = self.from_str(r")")
+    @functools.singledispatchmethod
+    def group(self_or_cls: Union[Ezre, Literal[Ezre]], name: str) -> Ezre:
+        """
+        Return a copy of this instance `self` with a regex group named `name`. 
+
+        If called from the class itself, creates a regex referring to the group named `name`. 
+
+        Examples
+        --------
+        >>> a.group("hello").re
+        '(?P<hello>(A|B))'
+        >>> Ezre.group("hello").re
+        '(?P=hello)'
+        """
+        start = self.from_str(f"(?P<{name}>")
+        end = self.from_str(")")
         expr = self.And(start, self, end)
         return self.__class__(
             expr=expr, label=self.label)
+
+    @group.register
+    @classmethod
+    def _(cls: type, name: str):
+        return cls(expr=f"(?P={name})")
 
     @property
     def cardinality(self) -> Cardinality:
@@ -604,6 +631,62 @@ class Ezre:
                expr=self.expr,
                label=self.label + Label(Var(cardinality)),
                cardinality=cardinality)
+
+    def ahead(self) -> Ezre:
+        """
+        Positive lookahead. 
+
+        See Also
+        --------
+        Ezre:  for documentation on usage. 
+        """
+        start = self.from_str("(?=")
+        end = self.from_str(")")
+        expr = self.And(start, self, end)
+        return self.__class__(
+            expr=expr, label=self.label)
+
+    def not_ahead(self) -> Ezre:
+        """
+        Negative lookahead. 
+
+        See Also
+        --------
+        Ezre:  for documentation on usage. 
+        """
+        start = self.from_str("(?!")
+        end = self.from_str(")")
+        expr = self.And(start, self, end)
+        return self.__class__(
+            expr=expr, label=self.label)
+
+    def behind(self) -> Ezre:
+        """
+        Positive lookbehind. 
+
+        See Also
+        --------
+        Ezre:  for documentation on usage. 
+        """
+        start = self.from_str("(?<=")
+        end = self.from_str(")")
+        expr = self.And(start, self, end)
+        return self.__class__(
+            expr=expr, label=self.label)
+
+    def not_behind(self) -> Ezre:
+        """
+        Negative lookbehind. 
+
+        See Also
+        --------
+        Ezre:  for documentation on usage. 
+        """
+        start = self.from_str("(?<!")
+        end = self.from_str(")")
+        expr = self.And(start, self, end)
+        return self.__class__(
+            expr=expr, label=self.label)
 
 
 class EZRE:
