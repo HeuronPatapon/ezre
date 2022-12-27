@@ -412,6 +412,13 @@ class Ezre:
     >>> out_
     'fweɰo taʔi ɹoʊzɨz'
 
+    # groups:
+
+    >>> a.group("hello").re
+    '(?P<hello>(A|B))'
+    >>> Ezre.backref("hello").re
+    '(?P=hello)'
+
     # lookaround assertions:
 
     >>> a.ahead().re  # positive lookahead
@@ -423,10 +430,6 @@ class Ezre:
     '(?<=(A|B))'
     >>> a.not_behind().re # negative lookbehind
     '(?<!(A|B))'
-
-    See Also
-    --------
-    Ezre.group:  for creating or referencing groups in regex. 
     """
     _instances = WeakValueDictionary()
     get_re: Callable[[], str] = operator.attrgetter("re")
@@ -542,29 +545,23 @@ class Ezre:
             raise TypeError(f"{(type(label) == Union[str, Label])=}")
         return self
 
-    @functools.singledispatchmethod
-    def group(self_or_cls: Union[Ezre, Literal[Ezre]], name: str) -> Ezre:
-        """
-        Return a copy of this instance `self` with a regex group named `name`. 
-
-        If called from the class itself, creates a regex referring to the group named `name`. 
-
-        Examples
-        --------
-        >>> a.group("hello").re
-        '(?P<hello>(A|B))'
-        >>> Ezre.group("hello").re
-        '(?P=hello)'
-        """
+    def group(self, name: str) -> Ezre:
+        """Return a copy of this instance with a regex group named `name`."""
         start = self.from_str(f"(?P<{name}>")
         end = self.from_str(")")
         expr = self.And(start, self, end)
         return self.__class__(
             expr=expr, label=self.label)
 
-    @group.register
     @classmethod
-    def _(cls: type, name: str):
+    def backref(cls, name: str) -> Ezre:
+        """
+        Create a regex referencing a group named `name`. 
+
+        See Also
+        --------
+        group
+        """
         return cls(expr=f"(?P={name})")
 
     @property
