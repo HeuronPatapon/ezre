@@ -1,6 +1,17 @@
+[tool.poetry]
+name = "ezre-heuronpatapon"
+version = "1.2.0"
+description = "Wrapper around the `re` module for easier management of regular expressions"
+authors = ["Heuron <heuron-patapon@laposte.net>"]
+license = "MIT"
+readme = "README.md"
+repository  = "https://github.com/HeuronPatapon/ezre.git"
+packages = [{ include = "hpat/ezre", from = "src" }]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
 [build-system]
-requires = [
-    "setuptools>=42",
-    "wheel"
-]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -21,13 +21,21 @@ jobs:
       with:
         python-version: '3.x'
 
+    - name: cache poetry install
+      # Reference: https://jacobian.org/til/github-actions-poetry/
+      uses: actions/cache@v2
+      with:
+        path: ~/.local
+        key: poetry-1.2.2
+
+    - name: Install poetry
+      run: python -m pip install poetry==1.2.2
+
     - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install build
+      run: poetry install --no-interaction
 
     - name: Build package
-      run: python -m build
+      run: poetry build --format wheel
 
     - name: Release
       uses: softprops/action-gh-release@v1
